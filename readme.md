@@ -1,2 +1,4 @@
 # openGameArtAttributionMaker
-Add a button to copy attribution info from an opengameart.org content page.
+Add a "Copy Markdown" button to copy attribution info when viewing an opengameart.org content page.
+
+![screenshot](screenshot.png)
