@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OpenGameArt Attribution Maker
 // @namespace    http://poikilos.org/
-// @version      1.0.0
+// @version      1.0.1
 // @description  Format the information from a content page
 // @author       Poikilos (Jake Gustafson)
 // @include      https://opengameart.org/content/*
@@ -376,7 +376,7 @@
       outputStr += "\nTags:";
       for (tai = 0; tai < tagAnchors.length; tai++) {
         var tagA = tagAnchors[tai];
-        outputStr += "\n - [" + tagA.textContent + "](" + tagA.href + ")";
+        outputStr += "\n- [" + tagA.textContent + "](" + tagA.href + ")";
       }
       outputStr += "\n";
     }
@@ -439,8 +439,8 @@
             licenseShortStr += " 4.0";
             versionIsFound = true;
           }
-          else if (exactLicenseVersion !== null) {
-            licenseShortStr += " " + exactLicenseVersion;
+          else if (license.exactLicenseVersion !== null) {
+            licenseShortStr += " " + license.exactLicenseVersion;
             versionIsFound = true;
           }
         }
@@ -723,12 +723,12 @@
     }
     for (var lai=0, aMax=licenseContainerElements.length; lai < aMax; lai++) {
         var licenseAnchors = licenseContainerElements[lai].children;
-        var exactLicenseVersion = null;
         if (licenseAnchors.length > 0) {
 
             console.log("Checking " + licenseAnchors.length + " license anchors...");
 
         var licenseA = licenseAnchors[0];
+        licenseA.exactLicenseVersion = null;
         if (verbose) {
           console.log("  checking " + licenseA.className + "...");
         // NOTE: .getAttribute("href") gets the raw value, but .href gets the resulting full URL.
@@ -757,7 +757,7 @@
             console.log("'''");
           }
           if (licenseA.href.slice(-3, -2) == ".") {
-            exactLicenseVersion = licenseA.href.slice(-4, -1);
+            licenseA.exactLicenseVersion = licenseA.href.slice(-4, -1);
           }
           else {
             console.warn("slice at -3 is not '.' but '" + licenseA.href.slice(-3, -2) + "'. The license version seems to be malformed: \"" + licenseA.href + "\"");
