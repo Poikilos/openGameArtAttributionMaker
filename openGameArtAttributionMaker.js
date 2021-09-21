@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OpenGameArt Attribution Maker
 // @namespace    http://poikilos.org/
-// @version      1.0.1
+// @version      1.0.2
 // @description  Format the information from a content page
 // @author       Poikilos (Jake Gustafson)
 // @include      https://opengameart.org/content/*
@@ -385,7 +385,7 @@
     }
 
     if (info.attributionNotice) {
-      outputStr += "\n## Copyright/Attribution Notice\n" + info.attributionNotice + "\n";
+      outputStr += "\n## " + info.goodAttributionNoticeFlag + "\n" + info.attributionNotice + "\n";
     }
 
     return outputStr;
@@ -771,17 +771,31 @@
         }
     }
     var attributionAncestorClassName = "field-name-field-copyright-notice";
+    // ^ Can also be field-name-field-art-attribution (content: "Attribution Instructions")
     var attributionAncestorElements = document.getElementsByClassName(attributionAncestorClassName);
     if (attributionAncestorElements.length < 1) {
         // The field is optional, so only warn if verbose.
         if (verbose) {
             console.log("INFO: class \"" + attributionAncestorClassName + "\" is not present (This is an optional field).");
         }
-        return info;
+        attributionAncestorClassName = "field-name-field-art-attribution";
+        attributionAncestorElements = document.getElementsByClassName(attributionAncestorClassName);
+        if (attributionAncestorElements.length < 1) {
+            if (verbose) {
+                console.log("INFO: class \"" + attributionAncestorClassName + "\" is not present (This is an optional field).");
+            }
+            return info;
+        }
+        else {
+            info.goodAttributionNoticeFlag = "Attribution Instructions"
+        }
     }
-    var goodAttributionNoticeFlag = "Copyright/Attribution Notice";
-    if (!attributionAncestorElements[0].children[0].textContent.includes("Copyright/Attribution Notice")) {
-      console.warn("The " + attributionAncestorClassName + ".firstChild should contain \"" + goodAttributionNoticeFlag + "\" but is \"" + attributionAncestorElements[0].children[0].textContent + "\"")
+    else {
+        info.goodAttributionNoticeFlag = "Copyright/Attribution Notice";
+    }
+
+    if (!attributionAncestorElements[0].children[0].textContent.includes(info.goodAttributionNoticeFlag)) {
+      console.warn("The " + attributionAncestorClassName + ".firstChild should contain \"" + info.goodAttributionNoticeFlag + "\" but is \"" + attributionAncestorElements[0].children[0].textContent + "\"")
     }
     var attributionE = attributionAncestorElements[0].children[1].firstChild;
     // ^ Such as <div class="field field-name-field-copyright-notice field-type-text-long field-label-above">  <!--attributionAncestorElements[0]-->
