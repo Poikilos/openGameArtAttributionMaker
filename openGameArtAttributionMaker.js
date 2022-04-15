@@ -470,7 +470,8 @@
         }
       }
     }
-    else if (license.href) {
+    // NOT an else if: must be sequential (!):
+    if (license.href) {
       if (!licenseShortStr) {
         if (verbose) {
           console.log("Generating short license name from URL instead of from clauses...");
